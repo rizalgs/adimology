@@ -11,11 +11,57 @@ export interface MarketDetectorBroker {
   netbs_buy_avg_price: string;
 }
 
+// Broker Summary Types
+export interface BrokerTopStat {
+  vol: number;
+  percent: number;
+  amount: number;
+  accdist: string;
+}
+
+export interface BrokerDetector {
+  top1: BrokerTopStat;
+  top3: BrokerTopStat;
+  top5: BrokerTopStat;
+  avg: BrokerTopStat;
+  total_buyer: number;
+  total_seller: number;
+  number_broker_buysell: number;
+  broker_accdist: string;
+  volume: number;
+  value: number;
+  average: number;
+}
+
+export interface BrokerBuyItem {
+  netbs_broker_code: string;
+  bval: string;
+  blot: string;
+  netbs_buy_avg_price: string;
+  type: string;
+}
+
+export interface BrokerSellItem {
+  netbs_broker_code: string;
+  sval: string;
+  slot: string;
+  netbs_sell_avg_price: string;
+  type: string;
+}
+
+export interface BrokerSummaryData {
+  detector: BrokerDetector;
+  topBuyers: BrokerBuyItem[];
+  topSellers: BrokerSellItem[];
+}
+
 export interface MarketDetectorResponse {
   data: {
     broker_summary: {
-      brokers_buy: MarketDetectorBroker[];
+      brokers_buy: BrokerBuyItem[];
+      brokers_sell: BrokerSellItem[];
     };
+    bandar_detector: BrokerDetector;
   };
 }
 
@@ -66,6 +112,7 @@ export interface StockAnalysisResult {
   stockbitData: BrokerData;
   marketData: MarketData;
   calculated: CalculatedData;
+  brokerSummary?: BrokerSummaryData;
 }
 
 export interface ApiResponse {

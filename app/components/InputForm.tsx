@@ -26,63 +26,85 @@ export default function InputForm({ onSubmit, loading, initialEmiten }: InputFor
     onSubmit({ emiten, fromDate, toDate });
   };
 
+  const setDateRange = (days: number) => {
+    const end = new Date();
+    const start = new Date();
+    
+    // If days is 0 (1D), it means just today for both
+    if (days === 0) {
+      // both are today, already default
+      // but maybe we want to force reset to today
+    } else {
+      start.setDate(end.getDate() - days);
+    }
+    
+    // Format YYYY-MM-DD
+    const formatDate = (d: Date) => d.toISOString().split('T')[0];
+    
+    setToDate(formatDate(end));
+    setFromDate(formatDate(start));
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="glass-card">
-      <h3>🔍 Analyze Stock</h3>
+    <form onSubmit={handleSubmit} className="glass-card compact-form">
+      <div className="compact-form-header">
+        <h3>🔍 Analyze Stock</h3>
+        <div className="quick-dates">
+          <button type="button" onClick={() => setDateRange(0)} className="quick-date-btn">1D</button>
+          <button type="button" onClick={() => setDateRange(7)} className="quick-date-btn">1W</button>
+          <button type="button" onClick={() => setDateRange(30)} className="quick-date-btn">1M</button>
+        </div>
+      </div>
       
-      <div className="grid grid-3">
-        <div className="input-group">
-          <label htmlFor="emiten" className="input-label">
+      <div className="compact-form-row">
+        <div className="input-group compact-group" style={{ flex: '0 0 100px' }}>
+          <label htmlFor="emiten" className="input-label compact-label">
             Emiten
           </label>
           <input
             id="emiten"
             type="text"
-            className="input-field"
+            className="input-field compact-input"
             value={emiten}
             onChange={(e) => setEmiten(e.target.value.toUpperCase())}
-            placeholder="SOCI"
+            placeholder="CODE"
             required
           />
         </div>
 
-        <div className="input-group">
-          <label htmlFor="fromDate" className="input-label">
-            From Date
+        <div className="input-group compact-group" style={{ flex: '1' }}>
+          <label className="input-label compact-label">
+            Date Range
           </label>
-          <input
-            id="fromDate"
-            type="date"
-            className="input-field"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            required
-          />
+          <div className="date-range-group">
+            <input
+              id="fromDate"
+              type="date"
+              className="input-field compact-input"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              required
+            />
+            <span className="date-separator">→</span>
+            <input
+              id="toDate"
+              type="date"
+              className="input-field compact-input"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              required
+            />
+          </div>
         </div>
 
-        <div className="input-group">
-          <label htmlFor="toDate" className="input-label">
-            To Date
-          </label>
-          <input
-            id="toDate"
-            type="date"
-            className="input-field"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            required
-          />
-        </div>
+        <button
+          type="submit"
+          className="btn btn-primary compact-btn"
+          disabled={loading}
+        >
+          {loading ? '...' : 'Analyze'}
+        </button>
       </div>
-
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={loading}
-        style={{ width: '100%' }}
-      >
-        {loading ? 'Analyzing...' : 'Analyze'}
-      </button>
     </form>
   );
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchMarketDetector, fetchOrderbook, getTopBroker, parseLot } from '@/lib/stockbit';
+import { fetchMarketDetector, fetchOrderbook, getTopBroker, parseLot, getBrokerSummary } from '@/lib/stockbit';
 import { calculateTargets } from '@/lib/calculations';
 import { saveStockQuery } from '@/lib/supabase';
 import type { StockInput, ApiResponse } from '@/lib/types';
@@ -25,6 +25,9 @@ export async function POST(request: NextRequest) {
 
     // Extract top broker data
     const brokerData = getTopBroker(marketDetectorData);
+
+    // Extract broker summary for the new card
+    const brokerSummary = getBrokerSummary(marketDetectorData);
 
     // Extract market data
     // The API might return data wrapped in 'data' property or directly
@@ -87,6 +90,7 @@ export async function POST(request: NextRequest) {
           targetRealistis1: calculated.targetRealistis1,
           targetMax: calculated.targetMax,
         },
+        brokerSummary,
       },
     };
 

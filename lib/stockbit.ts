@@ -1,4 +1,4 @@
-import type { MarketDetectorResponse, OrderbookResponse, BrokerData, WatchlistResponse } from './types';
+import type { MarketDetectorResponse, OrderbookResponse, BrokerData, WatchlistResponse, BrokerSummaryData } from './types';
 import { getSessionValue } from './supabase';
 
 const STOCKBIT_BASE_URL = 'https://exodus.stockbit.com';
@@ -180,5 +180,32 @@ export function parseLot(lotStr: string): number {
   return Number(lotStr.replace(/,/g, ''));
 }
 
+/**
+ * Get broker summary data from Market Detector response
+ */
+export function getBrokerSummary(marketDetectorData: MarketDetectorResponse): BrokerSummaryData {
+  const detector = marketDetectorData?.data?.bandar_detector;
+  const brokerSummary = marketDetectorData?.data?.broker_summary;
 
+  if (!detector) {
+    throw new Error('No bandar_detector data found in response');
+  }
 
+  return {
+    detector: {
+      top1: detector.top1,
+      top3: detector.top3,
+      top5: detector.top5,
+      avg: detector.avg,
+      total_buyer: detector.total_buyer,
+      total_seller: detector.total_seller,
+      number_broker_buysell: detector.number_broker_buysell,
+      broker_accdist: detector.broker_accdist,
+      volume: detector.volume,
+      value: detector.value,
+      average: detector.average,
+    },
+    topBuyers: brokerSummary?.brokers_buy?.slice(0, 4) || [],
+    topSellers: brokerSummary?.brokers_sell?.slice(0, 4) || [],
+  };
+}

@@ -451,11 +451,323 @@ h3 {
 }
 
 .compact-target-value {
-  font-size: 1rem;
+  font-size: 1.3rem; /* Increased size */
+  font-weight: 700;
 }
 
 .compact-target-gain {
   font-size: 0.65rem;
   color: #28a745;
   font-weight: 500;
+}
+
+/* ===== Broker Summary Card ===== */
+.cards-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.broker-summary-card {
+  width: 360px;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 0.75rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Matches compact-card shadow */
+}
+
+.broker-filters {
+  display: flex;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.broker-filter {
+  flex: 1;
+  text-align: center;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  color: #555;
+  border-right: 1px solid #e5e5e5;
+  cursor: pointer;
+  background: #fff;
+}
+
+.broker-filter:last-child {
+  border-right: none;
+}
+
+.broker-filter:hover {
+  background: #f5f5f5;
+}
+
+/* Broker Table Styles */
+.broker-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.broker-table th {
+  text-align: right;
+  padding: 4px;
+  color: #888;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  font-size: 0.7rem;
+}
+
+.broker-table th:first-child {
+  text-align: left;
+}
+
+.broker-table td {
+  padding: 6px 4px;
+  text-align: right;
+  color: #333;
+}
+
+.broker-table td.row-label {
+  text-align: left;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+}
+
+.broker-table td.num {
+  font-family: 'Inter', sans-serif; /* Ensure nums use Inter for consistency */
+  color: #444;
+}
+
+.broker-table td.num-wide {
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Broker Detail Specifics */
+.broker-detail-table th {
+  text-align: center;
+  color: #888;
+  font-size: 0.65rem;
+  padding: 4px 2px;
+}
+
+.broker-detail-table td {
+  text-align: center;
+  padding: 4px 2px;
+}
+
+.broker-code {
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.broker-code.buyer {
+  color: #764ba2; /* Purple from gradient */
+}
+
+.broker-code.seller {
+  color: #f5576c; /* Red from gradient */
+}
+
+.broker-detail-table .num {
+  font-size: 0.7rem;
+}
+
+.broker-detail-table tr {
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.broker-detail-table tr:last-child {
+  border-bottom: none;
+}
+
+/* Acc/Dist Badges */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+}
+
+.badge-acc {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-neutral {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.badge-dist {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-small-dist {
+  background: #fff3cd; /* Light orange/yellow */
+  color: #856404;     /* Darker text for readability if needed, or stick to a reddish tone */
+  background: #fca5a5; /* Using tailwind-like red-300 for Small Dist based on image */
+  color: #7f1d1d;
+}
+
+/* Override for better match with image */
+.badge-small-dist {
+  background: #ff8a80; /* Light Red */
+  color: #fff;
+  font-weight: 600;
+}
+
+.badge-acc {
+  background: #81c784; /* Light Green */
+  color: #fff;
+  font-weight: 600; /* Normal Acc */
+}
+
+.badge-neutral {
+  background: #e0e0e0;
+  color: #616161;
+}
+
+.badge-dist {
+  background: #ffbcbc; /* Pinkish Red */
+  color: #b71c1c;
+}
+
+/* Stats table divider */
+.broker-stats-table tr:first-child td {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.broker-stats-table tr:nth-child(2) td {
+  padding-top: 8px;
+}
+
+/* ===== Compact Input Form ===== */
+.compact-form {
+  padding: 1rem 1.5rem;
+}
+
+.compact-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.compact-form-header h3 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.quick-dates {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quick-date-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-date-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.compact-form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.compact-group {
+  margin-bottom: 0;
+}
+
+.compact-label {
+  font-size: 0.7rem;
+  margin-bottom: 0.25rem;
+}
+
+.compact-input {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  height: 38px; /* Fixed height for alignment */
+}
+
+.date-range-group {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.date-range-group .compact-input {
+  border: none;
+  background: transparent;
+  width: 130px; /* specific width for date inputs */
+}
+
+.date-range-group .compact-input:focus {
+  box-shadow: none;
+  background: rgba(255,255,255,0.05);
+}
+
+.date-separator {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  padding: 0 0.25rem;
+}
+
+.compact-btn {
+  height: 38px;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .compact-form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .compact-group {
+    width: 100% !important; /* Override inline styles */
+  }
+  
+  .date-range-group {
+    width: 100%;
+  }
+  
+  .date-range-group .compact-input {
+    width: 50%;
+  }
 }

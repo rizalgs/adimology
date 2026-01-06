@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import InputForm from './InputForm';
-import BrokerCard from './BrokerCard';
-import ResultTable from './ResultTable';
-import TargetCard from './TargetCard';
 import CompactResultCard from './CompactResultCard';
+import BrokerSummaryCard from './BrokerSummaryCard';
+import html2canvas from 'html2canvas';
 import type { StockInput, StockAnalysisResult } from '@/lib/types';
 import { getDefaultDate } from '@/lib/utils';
 
@@ -60,6 +59,7 @@ export default function Calculator({ selectedStock }: CalculatorProps) {
   const [result, setResult] = useState<StockAnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copiedImage, setCopiedImage] = useState(false);
 
   // Reset result and error when a new stock is selected from sidebar
   useEffect(() => {
@@ -117,6 +117,34 @@ export default function Calculator({ selectedStock }: CalculatorProps) {
     }
   };
 
+  const handleCopyImage = async () => {
+    const cardElement = document.getElementById('compact-result-card-container');
+    if (!cardElement) return;
+
+    try {
+      const canvas = await html2canvas(cardElement, {
+        backgroundColor: null,
+        scale: 2,
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        try {
+          const item = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([item]);
+          setCopiedImage(true);
+          setTimeout(() => setCopiedImage(false), 2000);
+        } catch (err) {
+          console.error('Failed to copy image:', err);
+          setError('Failed to copy image to clipboard');
+        }
+      });
+    } catch (err) {
+      console.error('Failed to generate image:', err);
+      setError('Failed to generate image');
+    }
+  };
+
   return (
     <div className="container">
       <div className="text-center mb-4">
@@ -147,63 +175,84 @@ export default function Calculator({ selectedStock }: CalculatorProps) {
 
       {result && (
         <div style={{ marginTop: '2rem' }}>
-          {/* Compact Card for Screenshot */}
-          <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
-            <CompactResultCard result={result} />
-          </div>
+          {/* Side-by-side Cards Container */}
+          <div className="cards-row">
+            {/* Left Column: Compact Result + Copy Button */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div id="compact-result-card-container">
+                <CompactResultCard result={result} />
+              </div>
+              
+              {/* Copy Buttons */}
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  onClick={handleCopy}
+                  className="btn btn-primary"
+                  style={{
+                    flex: 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    background: copied ? 'var(--gradient-success)' : 'var(--gradient-primary)',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  {copied ? (
+                    <>
+                      <span>✓</span>
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>📋</span>
+                      <span>Copy Text</span>
+                    </>
+                  )}
+                </button>
 
-          <BrokerCard data={result.stockbitData} />
-          
-          <div style={{ marginTop: '1.5rem' }}>
-            <ResultTable 
-              marketData={result.marketData} 
-              calculated={result.calculated} 
-            />
-          </div>
+                <button
+                  onClick={handleCopyImage}
+                  className="btn btn-primary"
+                  style={{
+                    flex: 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    background: copiedImage ? 'var(--gradient-success)' : '#4a5568',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  {copiedImage ? (
+                    <>
+                      <span>✓</span>
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>📸</span>
+                      <span>Image</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
 
-          <div style={{ marginTop: '1.5rem' }}>
-            <TargetCard
-              currentPrice={result.marketData.harga}
-              targetRealistis={result.calculated.targetRealistis1}
-              targetMax={result.calculated.targetMax}
-            />
-          </div>
-
-          {/* Copy Button */}
-          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <button
-              onClick={handleCopy}
-              className="btn btn-primary"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '1rem 2rem',
-                fontSize: '1rem',
-                fontWeight: '600',
-                background: copied ? 'var(--gradient-success)' : 'var(--gradient-primary)',
-                transition: 'all 0.3s ease',
-              }}
-            >
-              {copied ? (
-                <>
-                  <span>✓</span>
-                  <span>Copied!</span>
-                </>
-              ) : (
-                <>
-                  <span>📋</span>
-                  <span>Copy All Data</span>
-                </>
-              )}
-            </button>
-            <p style={{ 
-              marginTop: '0.5rem', 
-              fontSize: '0.875rem', 
-              color: 'var(--text-secondary)' 
-            }}>
-              Copy all emiten data and calculations for easy sharing
-            </p>
+            {/* Right Column: Broker Summary */}
+            {result.brokerSummary && (
+              <BrokerSummaryCard 
+                emiten={result.input.emiten}
+                dateRange={`${result.input.fromDate} — ${result.input.toDate}`}
+                brokerSummary={result.brokerSummary} 
+              />
+            )}
           </div>
         </div>
       )}
