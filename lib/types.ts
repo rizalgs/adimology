@@ -262,3 +262,33 @@ export interface AgentStoryResult {
   created_at?: string;
 }
 
+// Broker Flow Types (from tradersaham broker-intelligence API)
+export interface BrokerFlowDailyData {
+  d: string;        // Date (YYYY-MM-DD)
+  n: number;        // Net value
+  p: number;        // Price
+  a: number;        // Average (0 if selling)
+}
+
+export interface BrokerFlowActivity {
+  broker_code: string;
+  stock_code: string;
+  broker_status: 'Bandar' | 'Whale';
+  stock_name: string;
+  net_value: string;
+  total_buy_value: string;
+  total_buy_volume: string;
+  buy_days: string;
+  active_days: string;
+  consistency_pct: string;
+  daily_data: BrokerFlowDailyData[];
+  current_price: string;
+  float_pl_pct: string;
+}
+
+export interface BrokerFlowResponse {
+  trading_dates: string[];
+  total_trading_days: number;
+  sort_by: string;
+  activities: BrokerFlowActivity[];
+}

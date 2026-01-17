@@ -7,6 +7,7 @@ import BrokerSummaryCard from './BrokerSummaryCard';
 import KeyStatsCard from './KeyStatsCard';
 import AgentStoryCard from './AgentStoryCard';
 import PriceGraph from './PriceGraph';
+import BrokerFlowCard from './BrokerFlowCard';
 import html2canvas from 'html2canvas';
 import type { StockInput, StockAnalysisResult, KeyStatsData, AgentStoryResult } from '@/lib/types';
 import { getDefaultDate } from '@/lib/utils';
@@ -302,6 +303,13 @@ export default function Calculator({ selectedStock }: CalculatorProps) {
         fromDate={fromDate}
         toDate={toDate}
         onDateChange={handleDateChange}
+        onCopyText={handleCopy}
+        onCopyImage={handleCopyImage}
+        onAnalyzeAI={() => handleAnalyzeStory()}
+        copiedText={copied}
+        copiedImage={copiedImage}
+        storyStatus={storyStatus}
+        hasResult={!!result}
       />
 
       {loading && (
@@ -348,96 +356,19 @@ export default function Calculator({ selectedStock }: CalculatorProps) {
 
           {/* Side-by-side Cards Container */}
           <div className="cards-row">
-            {/* Left Column: Compact Result + Copy Button */}
+            {/* Left Column: Compact Result */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div id="compact-result-card-container">
-                <CompactResultCard result={result} />
+                <CompactResultCard 
+                  result={result} 
+                  onCopyText={handleCopy}
+                  onCopyImage={handleCopyImage}
+                  copiedText={copied}
+                  copiedImage={copiedImage}
+                />
               </div>
 
-              {/* Copy Buttons */}
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  onClick={handleCopy}
-                  className="btn btn-primary"
-                  style={{
-                    flex: 1,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem 1rem',
-                    fontSize: '0.8rem',
-                    fontWeight: '600',
-                    background: copied ? 'var(--gradient-success)' : 'var(--gradient-primary)',
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  {copied ? (
-                    <>
-                      <span>✓</span>
-                      <span>Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>📋</span>
-                      <span>Copy Text</span>
-                    </>
-                  )}
-                </button>
 
-                <button
-                  onClick={handleCopyImage}
-                  className="btn btn-primary"
-                  style={{
-                    flex: 1,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem 1rem',
-                    fontSize: '0.8rem',
-                    fontWeight: '600',
-                    background: copiedImage ? 'var(--gradient-success)' : '#4a5568',
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  {copiedImage ? (
-                    <>
-                      <span>✓</span>
-                      <span>Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>📸</span>
-                      <span>Image</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-               {/* Analyze Story Button (Moved here) */}
-               <button 
-                  onClick={() => handleAnalyzeStory()}
-                  disabled={storyStatus === 'pending' || storyStatus === 'processing'}
-                  className="btn btn-primary"
-                  style={{
-                    width: '100%',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem 1rem',
-                    fontSize: '0.8rem',
-                    fontWeight: '600',
-                    background: 'linear-gradient(135deg, #6C63FF, #00C896)',
-                    border: 'none',
-                    boxShadow: '0 4px 15px rgba(108, 99, 255, 0.3)'
-                  }}
-                >
-                  {storyStatus === 'pending' || storyStatus === 'processing' 
-                    ? '⏳ Analyzing...' 
-                    : '🤖 Analyze Story (AI)'}
-                </button>
             </div>
 
             {/* Right Column: Broker Summary */}
@@ -458,9 +389,22 @@ export default function Calculator({ selectedStock }: CalculatorProps) {
               />
             )}
 
-            {/* Price Graph Section - Full Width */}
-            <div style={{ gridColumn: '1 / -1', width: '100%', marginTop: '1rem' }}>
-              <PriceGraph ticker={result.input.emiten} />
+            {/* Price Graph + Broker Flow Section */}
+            <div style={{ 
+              gridColumn: '1 / -1', 
+              width: '100%', 
+              marginTop: '1rem',
+              display: 'flex',
+              gap: '1.5rem',
+              flexWrap: 'wrap',
+              alignItems: 'stretch'
+            }}>
+              <div style={{ flex: '1 1 0', minWidth: '400px' }}>
+                <PriceGraph ticker={result.input.emiten} />
+              </div>
+              <div style={{ flex: '1 1 0', minWidth: '400px', display: 'flex' }}>
+                <BrokerFlowCard emiten={result.input.emiten} />
+              </div>
             </div>
 
             {/* Agent Story Section - Full Width */}

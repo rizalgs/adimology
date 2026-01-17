@@ -36,7 +36,7 @@ export default function PriceGraph({ ticker }: PriceGraphProps) {
   }, [ticker]);
 
   return (
-    <div className="glass-card mt-4" style={{ 
+    <div className="glass-card" style={{ 
       padding: '0', 
       overflow: 'hidden',
       height: '600px',

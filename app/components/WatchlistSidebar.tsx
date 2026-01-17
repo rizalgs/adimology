@@ -146,7 +146,16 @@ export default function WatchlistSidebar({ onSelect }: WatchlistSidebarProps) {
 
       {/* Watchlist Items */}
       {!loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+        <div 
+          className="watchlist-items-container"
+          style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '0.25rem',
+            maxHeight: 'calc(100vh - 160px)',
+            overflowY: 'auto'
+          }}
+        >
           {watchlist.map((item, index) => {
             const percentValue = parseFloat(item.percent) || 0;
             const isPositive = percentValue >= 0;

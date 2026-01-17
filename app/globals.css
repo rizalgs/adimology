@@ -429,6 +429,8 @@ h3 {
   font-size: 0.8rem;
   color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-height: 600px;
+
 }
 
 .compact-header {
@@ -566,6 +568,42 @@ h3 {
   font-weight: 500;
 }
 
+.compact-footer {
+  display: flex;
+  gap: 1px;
+  margin: 0.75rem -1rem -0.75rem -1rem;
+  border-top: 1px solid #eee;
+  background: #eee;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+}
+
+.compact-action-btn {
+  flex: 1;
+  background: #fafafa;
+  border: none;
+  padding: 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.compact-action-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.compact-action-btn.active {
+  color: #00c896;
+}
+
 /* ===== Broker Summary Card ===== */
 .cards-row {
   display: flex;
@@ -586,6 +624,7 @@ h3 {
   font-size: 0.8rem;
   color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  height: 600px;
   /* Matches compact-card shadow */
 }
 
@@ -601,7 +640,7 @@ h3 {
   color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   /* Scrollable Logic */
-  max-height: 590px;
+  max-height: 600px;
   /* Reduced to match BrokerSummary visual approx */
   overflow-y: auto;
   scrollbar-width: thin;
@@ -794,6 +833,20 @@ h3 {
 }
 
 /* ===== Compact Input Form ===== */
+.compact-form-actions button {
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.compact-form-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.compact-form-actions button:active {
+  transform: translateY(0);
+}
+
 .compact-form {
   padding: 1rem 1.5rem;
   background: #13131a;
@@ -1176,3 +1229,226 @@ h3 {
   color: white;
   border-color: transparent;
 }
+
+/* ===== Broker Flow Card ===== */
+.broker-flow-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  height: 600px; /* Matching PriceGraph height */
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.broker-flow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.broker-flow-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.broker-flow-filters {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.broker-flow-filter-btn {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.broker-flow-filter-btn:hover {
+  color: var(--text-primary);
+}
+
+.broker-flow-filter-btn.active {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.broker-flow-content {
+  overflow-x: auto;
+}
+
+.broker-flow-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.broker-flow-table th {
+  text-align: left;
+  padding: 8px 6px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.broker-flow-table td {
+  padding: 8px 6px;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.broker-flow-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.broker-flow-table .row-num {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  width: 24px;
+}
+
+.broker-flow-table .broker-info {
+  min-width: 60px;
+}
+
+.broker-code-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.broker-code-badge.bandar {
+  background: rgba(102, 126, 234, 0.2);
+  color: #667eea;
+}
+
+.broker-code-badge.whale {
+  background: rgba(56, 239, 125, 0.2);
+  color: #38ef7d;
+}
+
+.broker-type-label {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.broker-type-label.smartmoney { color: #667eea; }
+.broker-type-label.whale { color: #38ef7d; }
+.broker-type-label.retail { color: #f5576c; }
+.broker-type-label.mix { color: #f093fb; }
+.broker-type-label.unknown { color: var(--text-muted); }
+
+.icon-action-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.icon-action-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.icon-action-btn:active {
+  transform: translateY(0);
+}
+
+.broker-flow-table .heatmap-cell {
+  min-width: 180px;
+}
+
+.broker-flow-table .net-value {
+  font-weight: 600;
+  font-family: 'Inter', monospace;
+  text-align: right;
+}
+
+.broker-flow-table .net-value.positive {
+  color: #38ef7d;
+}
+
+.broker-flow-table .net-value.negative {
+  color: #f5576c;
+}
+
+.broker-flow-table .consistency {
+  text-align: center;
+}
+
+.consistency-badge {
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.7rem;
+}
+
+.broker-flow-table .float-pl {
+  font-weight: 600;
+  text-align: right;
+}
+
+.broker-flow-table .float-pl.positive {
+  color: #38ef7d;
+}
+
+.broker-flow-table .float-pl.negative {
+  color: #f5576c;
+}
+
+/* Responsive for broker flow */
+@media (max-width: 1200px) {
+  .broker-flow-card {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Hide scrollbar but keep functionality */
+.app-sidebar,
+.keystats-card,
+.broker-flow-card,
+.watchlist-items-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.app-sidebar::-webkit-scrollbar,
+.keystats-card::-webkit-scrollbar,
+.broker-flow-card::-webkit-scrollbar,
+.watchlist-items-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+

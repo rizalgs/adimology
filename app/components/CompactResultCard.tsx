@@ -4,9 +4,19 @@ import type { StockAnalysisResult } from '@/lib/types';
 
 interface CompactResultCardProps {
   result: StockAnalysisResult;
+  onCopyText?: () => void;
+  onCopyImage?: () => void;
+  copiedText?: boolean;
+  copiedImage?: boolean;
 }
 
-export default function CompactResultCard({ result }: CompactResultCardProps) {
+export default function CompactResultCard({ 
+  result, 
+  onCopyText, 
+  onCopyImage, 
+  copiedText, 
+  copiedImage 
+}: CompactResultCardProps) {
   const { input, stockbitData, marketData, calculated } = result;
 
   const formatNumber = (num: number | null | undefined) => num?.toLocaleString() ?? '-';
@@ -20,16 +30,24 @@ export default function CompactResultCard({ result }: CompactResultCardProps) {
     <div className="compact-card">
       {/* Header */}
       <div className="compact-header">
-        <div>
-          <div className="compact-ticker">+ {input.emiten.toUpperCase()}</div>
-          {result.sector && (
-            <div style={{ fontSize: '0.7rem', color: '#999', marginTop: '2px' }}>
-              {result.sector}
-            </div>
-          )}
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+          <div>
+            <div className="compact-ticker">+ {input.emiten.toUpperCase()}</div>
+            {result.sector && (
+              <div style={{ fontSize: '0.7rem', color: '#999', marginTop: '2px' }}>
+                {result.sector}
+              </div>
+            )}
+          </div>
         </div>
+        
         <div className="compact-date">
-          <span className="compact-date-icon">📅</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
           {input.fromDate} — {input.toDate}
         </div>
       </div>
@@ -135,6 +153,43 @@ export default function CompactResultCard({ result }: CompactResultCardProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Actions Footer */}
+      <div className="compact-footer">
+        <button 
+          className={`compact-action-btn ${copiedText ? 'active' : ''}`}
+          onClick={onCopyText}
+        >
+          {copiedText ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          )}
+          {copiedText ? 'Copied Text' : 'Copy Text'}
+        </button>
+        <button 
+          className={`compact-action-btn ${copiedImage ? 'active' : ''}`}
+          onClick={onCopyImage}
+        >
+          {copiedImage ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          )}
+          {copiedImage ? 'Copied Image' : 'Copy Image'}
+        </button>
       </div>
     </div>
   );
