@@ -6,6 +6,7 @@ import type { BackgroundJobLog } from '@/lib/types';
 export default function JobStatusIndicator() {
   const [latestLog, setLatestLog] = useState<BackgroundJobLog | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -18,6 +19,40 @@ export default function JobStatusIndicator() {
       }
     } catch (error) {
       console.error('Failed to fetch job status', error);
+    }
+  };
+
+  const handleRetry = async () => {
+    if (!latestLog || isRetrying) return;
+
+    setIsRetrying(true);
+    try {
+      // Determine base URL for Netlify functions
+      // netlify functions:serve usually runs on port 9999
+      const host = window.location.hostname;
+      if (latestLog.job_name !== 'analyze-watchlist') {
+        console.warn(`Retry not implemented for job: ${latestLog.job_name}`);
+        return;
+      }
+
+      const res = await fetch('/api/job-retry', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobName: latestLog.job_name })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        // Immediately fetch status to show "running"
+        await fetchStatus();
+      } else {
+        alert(`Failed to retry job: ${data.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Failed to retry job', error);
+      alert('Failed to retry job. check console for details.');
+    } finally {
+      setIsRetrying(false);
     }
   };
 
@@ -132,13 +167,20 @@ export default function JobStatusIndicator() {
             </div>
           </div>
 
-          <button 
-            className="token-action-btn"
-            style={{ marginTop: '1rem' }}
-            onClick={() => window.open('/history', '_self')}
-          >
-            Go to History
-          </button>
+          {!isRunning && (
+            <button 
+              className="token-action-btn"
+              style={{ 
+                marginTop: '1rem',
+                opacity: isRetrying ? 0.7 : 1,
+                cursor: isRetrying ? 'not-allowed' : 'pointer'
+              }}
+              onClick={handleRetry}
+              disabled={isRetrying}
+            >
+              {isRetrying ? 'Triggering...' : isFailed ? 'Retry Failed Job' : 'Run Job Now'}
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -2,11 +2,11 @@ import type { Config } from "@netlify/functions";
 
 export default async (req: Request) => {
   try {
-    // Priority: process.env.URL (production) > default localhost:8888
-    // Force localhost:8888 if URL contains localhost to avoid common dev errors
+    // Priority: process.env.URL (production) > default localhost:8888 or 9999
+    const host = req.headers.get('host') || 'localhost:8888';
     const baseUrl = (process.env.URL && !process.env.URL.includes('localhost'))
       ? process.env.URL
-      : 'http://localhost:8888';
+      : `http://${host}`;
 
 
     

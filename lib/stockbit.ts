@@ -359,3 +359,46 @@ export async function fetchKeyStats(emiten: string): Promise<KeyStatsData> {
   return parseKeyStatsResponse(json);
 }
 
+/**
+ * Historical summary item from Stockbit API
+ */
+export interface HistoricalSummaryItem {
+  date: string;
+  close: number;
+  change: number;
+  value: number;
+  volume: number;
+  frequency: number;
+  foreign_buy: number;
+  foreign_sell: number;
+  net_foreign: number;
+  open: number;
+  high: number;
+  low: number;
+  average: number;
+  change_percentage: number;
+}
+
+/**
+ * Fetch historical price summary from Stockbit
+ * Returns daily price data including open, high, low, close
+ */
+export async function fetchHistoricalSummary(
+  emiten: string,
+  startDate: string,
+  endDate: string,
+  limit: number = 12
+): Promise<HistoricalSummaryItem[]> {
+  const url = `${STOCKBIT_BASE_URL}/company-price-feed/historical/summary/${emiten}?period=HS_PERIOD_DAILY&start_date=${startDate}&end_date=${endDate}&limit=${limit}&page=1`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: await getHeaders(),
+  });
+
+  await handleApiResponse(response, 'Historical Summary API');
+
+  const json = await response.json();
+  return json.data?.result || [];
+}
+

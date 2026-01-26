@@ -349,7 +349,7 @@ export async function getStockPriceByDate(emiten: string, date: string) {
 /**
  * Update the most recent previous day's real price for an emiten
  */
-export async function updatePreviousDayRealPrice(emiten: string, currentDate: string, price: number) {
+export async function updatePreviousDayRealPrice(emiten: string, currentDate: string, price: number, maxPrice?: number) {
   // 1. Find the latest successful record before currentDate
   const { data: record, error: findError } = await supabase
     .from('stock_queries')
@@ -369,9 +369,14 @@ export async function updatePreviousDayRealPrice(emiten: string, currentDate: st
   }
 
   // 2. Update that record with the new price
+  const updateData: { real_harga: number; max_harga?: number } = { real_harga: price };
+  if (maxPrice !== undefined) {
+    updateData.max_harga = maxPrice;
+  }
+
   const { data, error: updateError } = await supabase
     .from('stock_queries')
-    .update({ real_harga: price })
+    .update(updateData)
     .eq('id', record.id)
     .select();
 

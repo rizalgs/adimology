@@ -17,6 +17,7 @@ interface AnalysisRecord {
   target_realistis?: number;
   target_max?: number;
   real_harga?: number;
+  max_harga?: number;
   status: string;
   error_message?: string;
 }
@@ -245,7 +246,8 @@ export default function WatchlistHistoryTable() {
                   <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Harga</th>
                   <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Target R1</th>
                   <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Target Max</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Real Harga</th>
+                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Max Harga</th>
+                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Close Harga</th>
                   <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Bandar</th>
                   <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Vol Bandar</th>
                   <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Avg Bandar</th>
@@ -290,6 +292,31 @@ export default function WatchlistHistoryTable() {
                       </div>
                     </td>
                     <td style={{ padding: '0.5rem 1rem', textAlign: 'right', verticalAlign: 'middle' }}>
+                      {record.max_harga ? (
+                        <>
+                          <div style={{
+                            fontWeight: 600,
+                            fontVariantNumeric: 'tabular-nums',
+                            fontSize: '0.95rem',
+                            color: record.target_max && record.max_harga >= record.target_max
+                              ? 'var(--accent-warning)'
+                              : (record.target_realistis && record.max_harga >= record.target_realistis
+                                ? 'var(--accent-success)'
+                                : (record.harga && record.max_harga > record.harga
+                                  ? '#F59E0B' // Orange if reached profit area
+                                  : 'var(--accent-warning)'))
+                          }}>
+                            {formatNumber(record.max_harga)}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                            {calculateGain(record.harga, record.max_harga)}
+                          </div>
+                        </>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>-</span>
+                      )}
+                    </td>
+                    <td style={{ padding: '0.5rem 1rem', textAlign: 'right', verticalAlign: 'middle' }}>
                       {record.real_harga ? (
                         <>
                           <div style={{
@@ -300,7 +327,7 @@ export default function WatchlistHistoryTable() {
                               ? 'var(--accent-success)'
                               : (record.harga && record.real_harga > record.harga
                                 ? '#F59E0B' // Yellow/Orange for profit but below target
-                                : 'var(--accent-destructive)') // Red for loss
+                                : 'var(--accent-warning)') // Red for loss
                           }}>
                             {formatNumber(record.real_harga)}
                           </div>

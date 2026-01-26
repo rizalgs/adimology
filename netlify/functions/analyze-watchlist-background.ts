@@ -1,4 +1,4 @@
-import { fetchWatchlist, fetchMarketDetector, fetchOrderbook, getTopBroker, fetchEmitenInfo } from '../../lib/stockbit';
+import { fetchWatchlist, fetchMarketDetector, fetchOrderbook, getTopBroker, fetchEmitenInfo, fetchHistoricalSummary } from '../../lib/stockbit';
 import { calculateTargets } from '../../lib/calculations';
 import { 
   saveWatchlistAnalysis, 
@@ -112,8 +112,16 @@ export default async (req: Request) => {
           status: 'success'
         });
 
+        // Update previous day's record with close and high from historical data
         try {
-          await updatePreviousDayRealPrice(emiten, today, marketData.harga);
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 7); // Look back 7 days to ensure we get data
+          const historicalData = await fetchHistoricalSummary(emiten, yesterday.toISOString().split('T')[0], today, 5);
+          
+          if (historicalData.length > 0) {
+            const latestData = historicalData[0];
+            await updatePreviousDayRealPrice(emiten, today, latestData.close, latestData.high);
+          }
         } catch (updateError) {
           console.error(`[Background] Failed to update price for ${emiten}`, updateError);
         }

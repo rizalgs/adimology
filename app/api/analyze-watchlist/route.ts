@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchWatchlist, fetchMarketDetector, fetchOrderbook, getTopBroker, fetchEmitenInfo } from '@/lib/stockbit';
+import { fetchWatchlist, fetchMarketDetector, fetchOrderbook, getTopBroker, fetchEmitenInfo, fetchHistoricalSummary } from '@/lib/stockbit';
 import { calculateTargets } from '@/lib/calculations';
 import { saveWatchlistAnalysis, updatePreviousDayRealPrice } from '@/lib/supabase';
 
@@ -101,9 +101,18 @@ export async function POST(request: NextRequest) {
           status: 'success'
         });
 
-        // Update previous day's record with real price (current price)
+        // Update previous day's record with real price from historical data
         try {
-          await updatePreviousDayRealPrice(emiten, today, marketData.harga);
+          // Fetch yesterday's close and high from historical summary
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 7); // Look back 7 days to ensure we get data
+          const historicalData = await fetchHistoricalSummary(emiten, yesterday.toISOString().split('T')[0], today, 5);
+          
+          if (historicalData.length > 0) {
+            // Get the most recent historical data (which is today's or latest available)
+            const latestData = historicalData[0];
+            await updatePreviousDayRealPrice(emiten, today, latestData.close, latestData.high);
+          }
         } catch (updateError) {
           console.error(`Failed to update previous day real price for ${emiten}`, updateError);
         }
